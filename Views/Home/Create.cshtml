@@ -1,0 +1,33 @@
+﻿@model NoteTaking.ViewModel.NoteVM
+
+<div class="container py-5">
+    <form asp-action="Create">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+        <input asp-for="UserId" class="form-control" value="@ViewBag.UserId" type="hidden" />
+        <input asp-for="Id" class="form-control" type="hidden" />
+        <!-- Save Button at top right -->
+        <div class="d-flex justify-content-end mb-3">
+            <input type="submit" value="Save" class="btn btn-primary" />
+        </div>
+
+        <!-- Title Field -->
+        <div class="mb-3">
+            <label asp-for="Title" class="form-label"></label>
+            <input asp-for="Title" class="form-control form-control-lg" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+
+        <!-- Description Field -->
+        <div class="mb-3">
+            <label asp-for="Description" class="form-label"></label>
+            <textarea asp-for="Description" class="form-control form-control-lg" rows="10"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
