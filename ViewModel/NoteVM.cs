@@ -1,4 +1,5 @@
 ﻿using NoteTaking.Models;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NoteTaking.ViewModel
@@ -9,6 +10,7 @@ namespace NoteTaking.ViewModel
 
         public string? Title { get; set; }
 
+        [MaxLength(500, ErrorMessage = "Description cannot exceed 500 characters.")]
         public string? Description { get; set; }
 
         public decimal UserId { get; set; }

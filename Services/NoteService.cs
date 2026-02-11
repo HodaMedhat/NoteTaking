@@ -148,7 +148,7 @@ namespace NoteTaking.Services
                                   Title = x.Title,
                                   Description = x.Description,
                                   CreatedAt = x.CreatedAt,
-                                  User = y 
+                                  User = y
                               }).ToList();
 
                 return _mapper.Map<IList<Note>, IList<NoteVM>>(objLst);
@@ -214,5 +214,38 @@ namespace NoteTaking.Services
             }
 
         }
+
+        public void DeleteExpiredNotes()
+        {
+            try
+            {
+                using (var db = new PostgresContext())
+                {
+                    var today = DateOnly.FromDateTime(DateTime.Today);
+
+                    var expiredNotes = db.Notes
+                        .Where(n => n.IsDeleted == 1 &&
+                                    n.DeletedAt != null &&
+                                    n.DeletedAt.Value.AddDays(31).DayNumber <= today.DayNumber)
+                        .ToList();
+
+                    if (expiredNotes.Any())
+                    {
+                        db.Notes.RemoveRange(expiredNotes);
+                        db.SaveChanges();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                var logger = new ErrorLogger(_env);
+                logger.AppendErrors(new List<ErrorViewModel> { new ErrorViewModel {
+                FieldName = "NoteService/DeleteExpiredNotes",
+                ErrorMessage = ex.Message,
+                ErrorMessageInner = ex.InnerException != null ? ex.InnerException.Message: "0"}
+                   });
+            }
+        }
+
     }
 }

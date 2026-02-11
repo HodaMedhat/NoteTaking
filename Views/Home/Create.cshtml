@@ -20,8 +20,12 @@
         <!-- Description Field -->
         <div class="mb-3">
             <label asp-for="Description" class="form-label"></label>
-            <textarea asp-for="Description" class="form-control form-control-lg" rows="10"></textarea>
+            <textarea asp-for="Description" id="descriptionBox" class="form-control form-control-lg" rows="10" maxlength="500"></textarea>
             <span asp-validation-for="Description" class="text-danger"></span>
+            <small class="text-muted">
+                <span id="charCount" class="text-muted fw-semibold">0</span>
+                <span class="text-muted">/500 characters</span>
+            </small>
         </div>
     </form>
 </div>
@@ -30,4 +34,41 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <script>
+        const textarea = document.getElementById("descriptionBox");
+        const charCount = document.getElementById("charCount");
+        const maxLength = 500;
+
+        function updateCount() {
+            let currentLength = textarea.value.length;
+
+            // 🚫 Hard stop at 500 characters
+            if (currentLength > maxLength) {
+                textarea.value = textarea.value.substring(0, maxLength);
+                currentLength = maxLength;
+            }
+
+            charCount.textContent = currentLength;
+
+            // 🎨 Change color based on usage
+            if (currentLength >= 450 && currentLength < 500) {
+                charCount.classList.remove("text-muted", "text-danger");
+                charCount.classList.add("text-warning");
+            }
+            else if (currentLength >= 500) {
+                charCount.classList.remove("text-muted", "text-warning");
+                charCount.classList.add("text-danger");
+            }
+            else {
+                charCount.classList.remove("text-warning", "text-danger");
+                charCount.classList.add("text-muted");
+            }
+        }
+
+        textarea.addEventListener("input", updateCount);
+
+        // Initialize on page load (important for Edit page)
+        updateCount();
+    </script>
 }

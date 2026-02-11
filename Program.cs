@@ -21,6 +21,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<NoteService>();
 builder.Services.AddScoped<UserService>();
 
+builder.Services.AddHostedService<NoteCleanupService>();
 
 var app = builder.Build();
 

@@ -14,6 +14,14 @@
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
             @foreach (var note in Model)
             {
+
+                var today = DateOnly.FromDateTime(DateTime.Today);
+                var permanentDeleteDate = note.DeletedAt?.AddDays(31);
+
+                int daysLeft = permanentDeleteDate.HasValue
+                ? permanentDeleteDate.Value.DayNumber - today.DayNumber
+                : 0;
+
                 <!-- Note Card 1 -->
                 <div class="col">
                     <div class="card h-100 shadow-sm">
@@ -31,6 +39,24 @@
                         <div class="card-footer text-muted small d-flex justify-content-between align-items-center">
                             <span>Created on: @note.CreatedAt</span>
                             <span>Deleted on: @note.DeletedAt</span>
+                            @if (daysLeft > 7)
+                            {
+                                <span class="text-success fw-semibold">
+                                    @daysLeft days left
+                                </span>
+                            }
+                            else if (daysLeft > 0)
+                            {
+                                <span class="text-warning fw-semibold">
+                                    @daysLeft day@(daysLeft > 1 ? "s" : "") left
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="text-danger fw-semibold">
+                                    Ready for permanent deletion
+                                </span>
+                            }
                         </div>
                     </div>
                 </div>
@@ -70,7 +96,7 @@
             if (currentNoteId !== null) {
                 window.location.href = `/Home/Restore?id=${currentNoteId}`;
             }
-           
+
         }
     </script>
 </body>
